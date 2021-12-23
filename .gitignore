@@ -1,0 +1,8 @@
+/node_modules
+/error/*.json
+/error/details/*
+/data/cache/*
+/.vscode
+.eslintrc.js
+.env
+config/categories.json
