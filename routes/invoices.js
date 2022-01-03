@@ -6,7 +6,7 @@ const CreateInvoinceController = require('../controllers/invoices/create-invoice
 
 /* GET users listing. */
 router.get('/ping', function(req, res, next) {
-  res.send('pong');
+  res.send('pong :D');
 });
 
 router.post('/', function(req, res, next){
