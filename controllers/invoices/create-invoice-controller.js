@@ -76,6 +76,7 @@ class CreateInvoinceController extends BaseController {
         const dueDate = moment().add(1, 'days').format('YYYY-MM-DD');
         const anotation = this._data.anotation;
         const observations = this._data.observations;
+        const warehouse = this._data.warehouse;
         const status = this._data.status;
         const client = await this.create_client();
         const tax = await this.get_taxes();
@@ -108,6 +109,7 @@ class CreateInvoinceController extends BaseController {
             observations,
             anotation,
             status,
+            warehouse,
             client,
             stamp: {
                 generateStamp: false
@@ -116,13 +118,14 @@ class CreateInvoinceController extends BaseController {
             saleCondition,
             items
         };
+        console.log("🚀 ~ file: create-invoice-controller.js ~ line 106 ~ CreateInvoinceController ~ _onSave ~ body", body)
         // currency: {
         //     code: "CRC",
         //     exchangeRate: 1
         // },
         let result = await this._axiosHelper.makeRequest(`${global.config.alegra.url}/invoices`, 'POST',
         { "Authorization": `Basic ${this.key_alegra}` }, {}, body);
-        console.log("🚀 ~ file: create-invoice-controller.js ~ line 128 ~ CreateInvoinceController ~ _onSave ~ result", result.isError)
+        // console.log("🚀 ~ file: create-invoice-controller.js ~ line 128 ~ CreateInvoinceController ~ _onSave ~ result", result.isError)
         if (result.isError) {
             return result;
         } else {
