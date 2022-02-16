@@ -7,6 +7,8 @@ class AxiosHelper {
     }
 
     async makeRequest(url, method = "GET", headers = {}, params = {}, data = {}) {
+        console.log("🚀 ~ file: axios-helper.js ~ line 10 ~ AxiosHelper ~ makeRequest ~ url", url)
+        console.log("🚀 ~ file: axios-helper.js ~ line 10 ~ AxiosHelper ~ makeRequest ~ headers", headers)
         try {
             let res = await axios({
                 method,

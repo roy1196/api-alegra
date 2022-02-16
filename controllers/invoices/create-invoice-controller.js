@@ -21,43 +21,53 @@ class CreateInvoinceController extends BaseController {
     }
 
     async create_client() {
-        const client_name = this._client.name;
-        const client_phone = this._client.phone;
-        const client_email = this._client.email;
-        const client_id_type = this._client.identification.type;
+
         const client_id_number = this._client.identification.number;
+        let clientsFiltered = await this._axiosHelper.makeRequest(`${global.config.alegra.url}/contacts/?identification=${client_id_number}`, 'GET',{ "Authorization": `Basic ${this.key_alegra}` }, {},{});
+        clientsFiltered =clientsFiltered[Object.keys(clientsFiltered)[0]];
 
-        const client_addr_address = this._client.address.address;
-        const client_addr_department = this._client.address.department;
-        const client_addr_city = this._client.address.city;
-        const client_addr_district = this._client.address.district;
+        console.log("🚀 ~ file: create-invoice-controller.js ~ line 27 ~ CreateInvoinceController ~ create_client ~ clientsFiltered", clientsFiltered)
 
-        const body = {
-            "name": client_name,
-            "identificationObject": {
-                "type": client_id_type,
-                "number": client_id_number
-            },
-            "address": {
-                "address": client_addr_address,
-                "department": client_addr_department,
-                "city": client_addr_city,
-                "district": client_addr_district
-            },
-            "phonePrimary":client_phone,
-            email: client_email
+        if(!clientsFiltered){
+            console.log("Se va a crear el contacto")
+            const client_name = this._client.name;
+            const client_phone = this._client.phone;
+            const client_email = this._client.email;
+            const client_id_type = this._client.identification.type;
+    
+            const client_addr_address = this._client.address.address;
+            const client_addr_department = this._client.address.department;
+            const client_addr_city = this._client.address.city;
+            const client_addr_district = this._client.address.district;
+    
+            
+    
+            const body = {
+                "name": client_name,
+                "identificationObject": {
+                    "type": client_id_type,
+                    "number": client_id_number
+                },
+                "address": {
+                    "address": client_addr_address,
+                    "department": client_addr_department,
+                    "city": client_addr_city,
+                    "district": client_addr_district
+                },
+                "phonePrimary":client_phone,
+                email: client_email
+            }
+            let result = await this._axiosHelper.makeRequest(`${global.config.alegra.url}/contacts`, 'POST',
+                { "Authorization": `Basic ${this.key_alegra}` }, {}, body);
+    
+            if (result.isError) {
+                return null;
+            } else {
+                return result.data.id;
+            }
+        }else{
+            return clientsFiltered.id;
         }
-        let result = await this._axiosHelper.makeRequest(`${global.config.alegra.url}/contacts`, 'POST',
-            { "Authorization": `Basic ${this.key_alegra}` }, {}, body);
-
-        // console.log("🚀 ~ file: create-invoice-controller.js ~ line 54 ~ CreateInvoinceController ~ create_client ~ result", result.isError)
-
-        if (result.isError) {
-            return null;
-        } else {
-            return result.data.id;
-        }
-        // console.log(body);
     }
 
     async get_taxes() {
@@ -81,6 +91,7 @@ class CreateInvoinceController extends BaseController {
         const client = await this.create_client();
         const tax = await this.get_taxes();
         const items = this._data.items;
+
 
         // CASH Contado
         // CREDIT Crédito
@@ -129,7 +140,7 @@ class CreateInvoinceController extends BaseController {
         if (result.isError) {
             return result;
         } else {
-            console.log(result.data);
+            // console.log(result.data);
             return {
                 message:"La factura ha sido creado en Alegra Exitosamente",
                 id:result.data.id
