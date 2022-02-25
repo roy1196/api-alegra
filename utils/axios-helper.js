@@ -1,5 +1,6 @@
 const axios = require('axios').default;
 const https = require('https');
+const axiosRetry = require('axios-retry');
 
 class AxiosHelper {
 
@@ -9,6 +10,18 @@ class AxiosHelper {
     async makeRequest(url, method = "GET", headers = {}, params = {}, data = {}) {
         console.log("🚀 ~ file: axios-helper.js ~ line 10 ~ AxiosHelper ~ makeRequest ~ url", url)
         console.log("🚀 ~ file: axios-helper.js ~ line 10 ~ AxiosHelper ~ makeRequest ~ headers", headers)
+        axiosRetry(axios, {
+            retries: 3, // number of retries
+            retryDelay: (retryCount) => {
+              console.log(`retry attempt: ${retryCount}`);
+              return retryCount * 2000; // time interval between retries
+            },
+            retryCondition: (error) => {
+              // if retry condition is not specified, by default idempotent requests are retried
+              return error.response.status === 503 || error.response.status === 500;
+            },
+          });
+
         try {
             let res = await axios({
                 method,
