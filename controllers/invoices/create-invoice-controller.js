@@ -136,8 +136,9 @@ class CreateInvoinceController extends BaseController {
         // },
         let result = await this._axiosHelper.makeRequest(`${global.config.alegra.url}/invoices`, 'POST',
         { "Authorization": `Basic ${this.key_alegra}` }, {}, body);
-        // console.log("🚀 ~ file: create-invoice-controller.js ~ line 128 ~ CreateInvoinceController ~ _onSave ~ result", result.isError)
+        console.log("🚀 ~ file: create-invoice-controller.js ~ line 128 ~ CreateInvoinceController ~ _onSave ~ result", result)
         if (result.isError) {
+            this._addMessageByText(result.message);
             return result;
         } else {
             // console.log(result.data);
@@ -146,8 +147,6 @@ class CreateInvoinceController extends BaseController {
                 id:result.data.id
             }
         }
-        console.log("🚀 ~ file: create-invoice-controller.js ~ line 128 ~ CreateInvoinceController ~ _onSave ~ result", result.data)
-        // return result; 
     }
 }
 
